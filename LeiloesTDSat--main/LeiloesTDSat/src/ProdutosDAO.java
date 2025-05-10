@@ -25,8 +25,7 @@ public class ProdutosDAO {
              JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Erro ao cadastrar produto: " + e.getMessage());
-        }
-        
+        }   
     }
     
     public ArrayList<ProdutosDTO> listarProdutos(){
@@ -67,13 +66,27 @@ public class ProdutosDAO {
         }
     }
     public ArrayList<ProdutosDTO> listarProdutosVendidos(){
-        ArrayList<ProdutosDTO> listaVendidos = new ArrayList<>();
+        listagem = new ArrayList<>();
         String sql = "SELECT * FROM produtos WHERE status = 'vendido'";
         try{
-             conn = new conectaDAO().connectDB();
-             prep = conn.prepareStatement(sql);
-            resultset = prep.executeQuery()
+            conn = new conectaDAO().connectDB();
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
+            
+            while(resultset.next()){
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+                System.out.println("Produto: " + produto.getNome() + " - " + produto.getStatus());
+                listagem.add(produto);
+            }
+        }catch(Exception ex){
+            System.out.println("Erro ao listar produtos: " + ex.getMessage());
+            return null;
         }
+        return listagem;
     }
 }
 

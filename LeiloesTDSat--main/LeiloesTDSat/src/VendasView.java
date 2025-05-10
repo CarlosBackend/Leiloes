@@ -1,8 +1,14 @@
 
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+
 public class VendasView extends javax.swing.JFrame {
 
     public VendasView() {
         initComponents();
+        listarVendas();
     }
 
     @SuppressWarnings("unchecked")
@@ -12,7 +18,7 @@ public class VendasView extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        listaProdutos = new javax.swing.JTable();
+        listaVendas = new javax.swing.JTable();
         btnVoltar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -20,18 +26,15 @@ public class VendasView extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Lucida Fax", 0, 18)); // NOI18N
         jLabel1.setText("Lista Vendas");
 
-        listaProdutos.setModel(new javax.swing.table.DefaultTableModel(
+        listaVendas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "ID", "Nome", "Valor", "Status"
             }
         ));
-        jScrollPane1.setViewportView(listaProdutos);
+        jScrollPane1.setViewportView(listaVendas);
 
         btnVoltar.setText("Voltar");
         btnVoltar.addActionListener(new java.awt.event.ActionListener() {
@@ -85,7 +88,26 @@ public class VendasView extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnVoltarActionPerformed
 
-  
+  private void listarVendas(){
+      try{
+      ProdutosDAO pdao = new ProdutosDAO();
+      DefaultTableModel model = (DefaultTableModel) listaVendas.getModel();
+      ArrayList<ProdutosDTO> lista = pdao.listarProdutosVendidos();
+      model.setRowCount(0);
+      
+      for(ProdutosDTO produto:lista){
+          model.addRow(new Object[]{
+              produto.getId(),
+              produto.getNome(),
+              produto.getValor(),
+              produto.getStatus()
+          });
+      }
+    }catch(Exception e){
+        JOptionPane.showMessageDialog(null, "Erro ao listar produtos vendidos: " + e.getMessage());
+    }
+  }
+    
     public static void main(String args[]) {
        
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -100,6 +122,6 @@ public class VendasView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable listaProdutos;
+    private javax.swing.JTable listaVendas;
     // End of variables declaration//GEN-END:variables
 }
